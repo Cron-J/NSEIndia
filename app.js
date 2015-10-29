@@ -24,6 +24,7 @@ var bhavFileBaseURL = 'http://www.nseindia.com/content/historical/DERIVATIVES/{0
 var bhavFileName = 'fo{2}{1}{0}bhav.csv.zip';
 var bhavFilesZipDir = "./tmp/bhavFilesZip/";
 var bhavFilesCsvDir = "./tmp/bhavFilesCsv/";
+var bhavFileRequestHeader = { "User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.97 Safari/537.11", "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"}
 function copyToDB(fileName){
 	//file downloaded successfully
 }
@@ -33,29 +34,29 @@ function extractFile(filePath, success){
 	console.log("CSV Extracted: ", filePath);
 	success();
 }
+var ctr = 0;
 function importBhavFile(year, month, day){
+	// ctr += 5000;
+	// setTimeout(function(){
+		
+	// }, ctr);
 	var fileName = bhavFileName.format(year, month, day);
 	var fileURL = bhavFileBaseURL.format(year, month, day);
-	// console.log(fileURL);
-	request({
-		url: fileURL, 
-		headers: { 
-			"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.97 Safari/537.11",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            // "Cookie": "cookie"            
-            // "Referer": "http://www.nseindia.com/products/content/all_daily_reports.htm",
-            // "Accept-Encoding": "gzip,deflate,sdch",
-            // "encoding": "null",
-        }
-    })
-	.pipe(fs.createWriteStream(bhavFilesZipDir + fileName))
-	.on('close', function(){
-		// extractFile(bhavFilesZipDir + fileName, copyToDB)
-		console.log("ZIP Downloaded: ", fileName);	
+	
+    var r = request({ url: fileURL, headers: bhavFileRequestHeader });
+	r.on('response', function (resp) {
+	   // resp.headers 
+	   if(resp.statusCode == 200){
+		   r.pipe(fs.createWriteStream(bhavFilesZipDir + fileName))
+			.on('close', function(){
+				console.log("ZIP Downloaded: ", fileName);	
+				extractFile(bhavFilesZipDir + fileName, copyToDB);
+			});
+		}
 	});
 }
 function importBhavFilesBetween(startDate, endDate){
 	for(var date = startDate; date.isBefore(endDate); date.add(1,'days'))
 		importBhavFile(date.format('YYYY'),date.format('MMM').toUpperCase(),date.format('DD'));
 }
-importBhavFilesBetween(moment('2015-10-01'), moment('2015-10-22'));
+importBhavFilesBetween(moment('2015-10-02'), moment('2015-10-22'));
