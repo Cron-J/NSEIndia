@@ -8,8 +8,13 @@ var express = require('express')
 , pg = require('pg')
 , copyFrom = require('pg-copy-streams').from
 , app = express();
+<<<<<<< HEAD
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
+=======
+app.use(bodyParser.urlencoded({ extended: true }));
+format.extend(String.prototype);
+>>>>>>> faf8229a2b1a88dbdad179d060238a6e126c1983
 
 format.extend(String.prototype);
 //eg.: DERIVATIVES/2015/OCT/fo07OCT2015bhav.csv.zip
@@ -27,6 +32,7 @@ function copyToDB(fileName){
 		var fileStream = fs.createReadStream(bhavFilesCsvDir + fileName);
 		fileStream.pipe(stream).on('finish', function(){
 			console.log("Data Imported to PG: ", fileName);
+			done();
 		});
 	});
 }
