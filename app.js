@@ -8,14 +8,8 @@ var express = require('express')
 , pg = require('pg')
 , copyFrom = require('pg-copy-streams').from
 , app = express();
-<<<<<<< HEAD
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
-=======
-app.use(bodyParser.urlencoded({ extended: true }));
-format.extend(String.prototype);
->>>>>>> faf8229a2b1a88dbdad179d060238a6e126c1983
-
 format.extend(String.prototype);
 //eg.: DERIVATIVES/2015/OCT/fo07OCT2015bhav.csv.zip
 var bhavFileBaseURL = 'http://www.nseindia.com/content/historical/DERIVATIVES/{0}/{1}/fo{2}{1}{0}bhav.csv.zip';
@@ -32,7 +26,6 @@ function copyToDB(fileName){
 		var fileStream = fs.createReadStream(bhavFilesCsvDir + fileName);
 		fileStream.pipe(stream).on('finish', function(){
 			console.log("Data Imported to PG: ", fileName);
-			done();
 		});
 	});
 }
@@ -100,7 +93,8 @@ app.post('/getDataOfSymbol',function(req,res){
 		if(err) {
 			return console.error('error fetching client from pool', err);
 		}
-		client.query("SELECT instrument, option_typ, strike_pr, close, timestamp, expiry_dt from bhav where symbol = $1 and timestamp between $2  and $3", [req.body.symbol, req.body.from, req.body.to],function(err, result) {
+		client.query("SELECT instrument, option_typ, strike_pr, close, timestamp, expiry_dt from bhav where symbol = $1 and timestamp between $2  and $3 order by timestamp", [req.body.symbol, req.body.from, req.body.to],function(err, result) {
+		// client.query("SELECT instrument, option_typ, strike_pr, close, timestamp, expiry_dt from bhav where symbol = $1 and timestamp between $2  and $3", [req.body.symbol, req.body.from, req.body.to],function(err, result) {
 			//call `done()` to release the client back to the pool
 			done();
 			res.send(result.rows);
