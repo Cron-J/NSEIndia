@@ -5,25 +5,25 @@
     <meta charset="utf-8">
     <link href="lib/nv.d3.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.2/d3.min.js" charset="utf-8"></script> 
-        <script src="lib/nv.d3.js"></script>
+    <script src="./bower_components/angular/angular.js"></script>
+    <script src="./bower_components/d3/d3.js"></script>
+    <script src="./bower_components/nvd3/build/nv.d3.js"></script>
+    <script src="./bower_components/angular-nvd3/dist/angular-nvd3.js"></script>
+    <link rel="stylesheet" href="./bower_components/nvd3/build/nv.d3.css">
 </head>
 
 <body>
     <div class="container" ng-controller="nseCtrl">
-        <div class="row" style="margin-bottom:200px;">
+        <div class="row">
             <div class="form-inline">
                 <div class="form-group">
                     <select class="form-control" ng-model="symbol" ng-options="item.symbol for item in items" ng-change="getSymbolData(symbol);"></select>
                 </div>
             </div>
         </div>
-
-
-          <div linear-chart chart-data="salesData"></div>
-
-
-
+        <div class="row">
+            <nvd3 options="options" data="data"></nvd3>
+        </div>
     </div>
     <!-- <div id="chart1">
         <svg></svg>
@@ -33,7 +33,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="js/controller.js"></script>
-    <script src="js/directive.js"></script>
 </body>
 
 </html>
