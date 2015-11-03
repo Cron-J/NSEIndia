@@ -75,7 +75,7 @@ app.controller('nseCtrl', ['$scope', '$location', '$http',
 
         $scope.data = [];
 
-        $scope.dataval={
+        $scope.dataval = {
             todate: new Date(),
             fromdate: new Date((new Date()).setMonth((new Date()).getMonth() - 1)),
             symbol: ""
@@ -91,10 +91,10 @@ app.controller('nseCtrl', ['$scope', '$location', '$http',
                 });
         }
 
-        getSymbol();    
+        getSymbol();
         console.log($scope.dataval.fromdate);
 
-        $scope.dateChange = function(){
+        $scope.dateChange = function() {
             $scope.data = [];
             $scope.getSymbolData();
         }
@@ -123,8 +123,16 @@ app.controller('nseCtrl', ['$scope', '$location', '$http',
         }
 
 
-        $scope.oneMonthData= function(){
-            
+        $scope.oneMonthData = function() {
+
+            $scope.dataval = {
+                todate: new Date(),
+                fromdate: new Date((new Date()).setMonth((new Date()).getMonth() - 1)),
+                symbol: ""
+            };
+
+            $scope.getSymbolData();
+
         }
 
     }
