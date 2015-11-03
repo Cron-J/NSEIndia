@@ -95,8 +95,7 @@ app.post('/getDataOfSymbol',function(req,res){
 		if(err) {
 			return console.error('error fetching client from pool', err);
 		}
-		// client.query("SELECT instrument, option_typ, strike_pr, close, timestamp, expiry_dt from bhav where instrument IN ('FUTIDX','FUTSTK') and symbol = $1 and timestamp between $2  and $3 order by timestamp", [req.body.symbol, req.body.from, req.body.to],function(err, result) {
-		client.query("SELECT instrument, option_typ, strike_pr, close, timestamp, expiry_dt from bhav where symbol = $1 and timestamp between $2 and $3 order by timestamp", [req.body.symbol, req.body.from, req.body.to],function(err, result) {
+		client.query("SELECT instrument, option_typ, strike_pr, close, timestamp, expiry_dt from bhav where symbol = $1 and timestamp between $2  and $3 order by timestamp", [req.body.symbol, req.body.from, req.body.to],function(err, result) {
 			//call `done()` to release the client back to the pool
 			done();
 
