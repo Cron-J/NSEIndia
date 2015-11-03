@@ -15,6 +15,7 @@
     "tests"
   ],
   "dependencies": {
-    "angular-nvd3": "~1.0.2"
+    "angular-nvd3": "~1.0.2",
+    "underscore": "~1.8.3"
   }
 }
