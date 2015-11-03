@@ -95,44 +95,48 @@ app.controller('nseCtrl', ['$scope', '$location', '$http',
         console.log($scope.dataval.fromdate);
 
         $scope.dateChange = function() {
-            $scope.data = [];
-            $scope.getSymbolData();
+            $scope.getSymbolData(true);
         }
 
-        $scope.getSymbolData = function() {
-            $scope.loading = true;
-            $http.post('/getDataOfSymbol', {
-                    symbol: $scope.dataval.symbol.symbol,
-                    from: $scope.dataval.fromdate,
-                    to: $scope.dataval.todate
-                })
-                .success(function(data, status) {
-                    var oldData = $scope.data.slice();
-                    oldData.push({
-                        values: data,
-                        key: $scope.dataval.symbol.symbol
+        $scope.getSymbolData = function(clear) {
+            if ($scope.dataval.symbol.symbol) {
+
+                $scope.loading = true;
+                $http.post('/getDataOfSymbol', {
+                        symbol: $scope.dataval.symbol.symbol,
+                        from: $scope.dataval.fromdate,
+                        to: $scope.dataval.todate
+                    })
+                    .success(function(data, status) {
+                        var oldData = clear ? [] : $scope.data.slice();
+                        oldData.push({
+                            values: data,
+                            key: $scope.dataval.symbol.symbol
+                        });
+                        $scope.data = oldData;
+                        $scope.loading = false;
+                    })
+                    .error(function(data, status) {
+                        $scope.loading = false;
+                        // growl.addErrorMessage(data.message);
                     });
-                    $scope.data = oldData;
-                    $scope.loading = false;
-                })
-                .error(function(data, status) {
-                    $scope.loading = false;
-                    // growl.addErrorMessage(data.message);
-                });
+            }
 
         }
 
 
-        $scope.oneMonthData = function() {
-
-            $scope.dataval = {
-                todate: new Date(),
-                fromdate: new Date((new Date()).setMonth((new Date()).getMonth() - 1)),
-                symbol: ""
-            };
-
-            $scope.getSymbolData();
-
+        $scope.mMonthData = function(m) {
+            $scope.dataval.fromdate = new Date((new Date()).setMonth((new Date()).getMonth() - m));
+            $scope.dataval.todate = new Date();
+            $scope.getSymbolData(true);
+        }
+        $scope.mDayData = function(m) {
+            $scope.dataval.fromdate = new Date((new Date()).setDate((new Date()).getDate() - m));
+            $scope.dataval.todate = new Date();
+            $scope.getSymbolData(true);
+        }
+        $scope.upgrade = function(){
+            alert("Please upgrade to premium. contact@cronj.com")
         }
 
     }

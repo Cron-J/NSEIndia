@@ -29,11 +29,14 @@
         <div class="row">
             <div class="form-inline">
                 <div class="pagination">
-                    <button  class="page" ng-click="oneMonthData();" >1 M</button>
-                    <button  class="page" >2 M</button>
-                    <button  class="page" >3 M</button>
-                    <button  class="page" >6 M</button>
-                    <button  class="page" >All Time</button>
+                    <button  class="page" ng-click="upgrade();" >Today</button>
+                    <button  class="page" ng-click="mDayData(7);" >7 D</button>
+                    <button  class="page" ng-click="mDayData(15);" >15 D</button>
+                    <button  class="page" ng-click="mMonthData(1);" >1 M</button>
+                    <button  class="page" ng-click="mMonthData(2);">2 M</button>
+                    <button  class="page" ng-click="mMonthData(3);">3 M</button>
+                    <button  class="page" ng-click="mMonthData(6);">6 M</button>
+                    <button  class="page" ng-click="mMonthData(12);">All Time</button>
                 </div>
                 <div class="form-group">
                     <label class="label-control">From Date</label>

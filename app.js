@@ -120,15 +120,15 @@ app.post('/getDataOfSymbol',function(req,res){
                 //todo: initial memo is first element, error when no strike point found
                 var call = _.reduce(values, function(memo, value) {
                     if (value.option_typ == "CE")
-                        return (Math.abs(value.strike_pr - close) < Math.abs(memo.strike_pr - close) ? value : memo);
+                        return (!memo.strike_pr || Math.abs(value.strike_pr - close) < Math.abs(memo.strike_pr - close) ? value : memo);
                     return memo;
-                });
+                }, {strike_pr: undefined});
                 //find closest put entry
                 var put = _.reduce(values, function(memo, value) {
                     if (value.option_typ == "PE")
-                        return (Math.abs(value.strike_pr - close) < Math.abs(memo.strike_pr - close) ? value : memo);
+                        return (!memo.strike_pr || Math.abs(value.strike_pr - close) < Math.abs(memo.strike_pr - close) ? value : memo);
                     return memo;
-                });
+                }, {strike_pr: undefined});
                 return {
                     futidx: futidx,
                     call: call,
