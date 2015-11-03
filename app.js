@@ -98,7 +98,11 @@ app.post('/getDataOfSymbol',function(req,res){
 		client.query("SELECT instrument, option_typ, strike_pr, close, timestamp, expiry_dt from bhav where symbol = $1 and timestamp between $2  and $3", [req.body.symbol, req.body.from, req.body.to],function(err, result) {
 			//call `done()` to release the client back to the pool
 			done();
-			res.send(result.rows);
+
+			var resultdata = result.rows;
+			res.send(resultdata);
+
+
 			if(err) {
 				return console.error('error running query', err);
 			}
