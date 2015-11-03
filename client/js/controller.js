@@ -121,5 +121,11 @@ app.controller('nseCtrl', ['$scope', '$location', '$http',
                 });
 
         }
+
+
+        $scope.oneMonthData= function(){
+            
+        }
+
     }
 ]);
