@@ -75,6 +75,14 @@ app.controller('nseCtrl', ['$scope', '$location', '$http',
 
         $scope.data = [];
 
+        $scope.dataval={
+            todate: new Date(),
+            fromdate: new Date((new Date()).setMonth((new Date()).getMonth() - 1)),
+            symbol: ""
+        };
+
+        console.log($scope.dataval.fromdate);
+
         var getSymbol = function() {
             $http.get('/getSymbols')
                 .success(function(data, status) {
@@ -83,27 +91,26 @@ app.controller('nseCtrl', ['$scope', '$location', '$http',
                 });
         }
 
-        getSymbol();
+        getSymbol();    
+        console.log($scope.dataval.fromdate);
 
-        $scope.todate = new Date();
-        
-        $scope.fromdate = new Date(new Date($scope.todate.setMonth($scope.todate.getMonth() - 1)).setDate($scope.todate.getDate() - 1));
-        
-        console.log($scope.todate);
-        console.log($scope.fromdate);
+        $scope.dateChange = function(){
+            $scope.data = [];
+            $scope.getSymbolData();
+        }
 
-        $scope.getSymbolData = function(symbolVal,fromDate,toDate) {
+        $scope.getSymbolData = function() {
             $scope.loading = true;
             $http.post('/getDataOfSymbol', {
-                    symbol: symbolVal,
-                    from: fromDate,
-                    to: toDate
+                    symbol: $scope.dataval.symbol.symbol,
+                    from: $scope.dataval.fromdate,
+                    to: $scope.dataval.todate
                 })
                 .success(function(data, status) {
                     var oldData = $scope.data.slice();
                     oldData.push({
                         values: data,
-                        key: symbolVal
+                        key: $scope.dataval.symbol.symbol
                     });
                     $scope.data = oldData;
                     $scope.loading = false;

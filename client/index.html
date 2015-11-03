@@ -19,7 +19,7 @@
         <div class="row">
             <div class="form-inline">
                 <div class="form-group">
-                    Add Symbol: <select class="form-control" ng-model="data.symbol" ng-init="data.todate=date" ng-options="item.symbol for item in items" ng-change="getSymbolData(data);">
+                    Add Symbol: <select class="form-control" ng-model="dataval.symbol"  ng-options="item.symbol for item in items" ng-change="getSymbolData();">
                         <option value="">--Select Symbol--</option>
                     </select>
                     <img src="./images/loading.gif" ng-show="loading">
@@ -37,11 +37,11 @@
                 </div>
                 <div class="form-group">
                     <label class="label-control">From Date</label>
-                    <input class="form-control" type="date" ng-model="data.fromdate" placeholder="from" ng-change="getSymbolData(data);">
+                    <input class="form-control" type="date" ng-model="dataval.fromdate" placeholder="from" ng-change="dateChange();" value="{{ dataval.fromdate | date: 'yyyy-MM-dd' }}">
                 </div>
                 <div class="form-group">
                     <label class="label-control">To Date</label>
-                    <input class="form-control" type="date" ng-model="data.todate" placeholder="to" nng-change="getSymbolData(data);">
+                    <input class="form-control" type="date" ng-model="dataval.todate" placeholder="to" ng-change="dateChange();" value="{{ dataval.todate | date: 'yyyy-MM-dd' }}">
                 </div>
             </div>
             <nvd3 options="options" data="data"></nvd3>
