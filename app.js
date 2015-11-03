@@ -133,7 +133,7 @@ app.post('/getDataOfSymbol',function(req,res){
                     futidx: futidx,
                     call: call,
                     put: put,
-                    date: date,
+                    date: new Date(date),
                     straddle: call.close + put.close
                 };
             });
@@ -142,7 +142,7 @@ app.post('/getDataOfSymbol',function(req,res){
             //performance
             // var t1 = performance.now();
             // console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")
-            res.send(straddleData);
+            res.send(_.sortBy(straddleData, 'date'));
 
 
 
