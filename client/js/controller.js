@@ -1,6 +1,7 @@
 var app = angular.module('nseApp', ['nvd3']);
 app.controller('nseCtrl', ['$scope', '$location', '$http',
     function($scope, $location, $http) {
+        $scope.loading = true;
         $scope.options = {
             chart: {
                 type: 'lineChart',
@@ -12,14 +13,26 @@ app.controller('nseCtrl', ['$scope', '$location', '$http',
                 //     bottom: 40,
                 //     left: 55
                 // },
-                x: function(d){ return d.date; },
-                y: function(d){ return d.straddle; },
+                x: function(d) {
+                    return d.date;
+                },
+                y: function(d) {
+                    return d.straddle;
+                },
                 useInteractiveGuideline: true,
                 dispatch: {
-                    stateChange: function(e){ console.log("stateChange"); },
-                    changeState: function(e){ console.log("changeState"); },
-                    tooltipShow: function(e){ console.log("tooltipShow"); },
-                    tooltipHide: function(e){ console.log("tooltipHide"); }
+                    stateChange: function(e) {
+                        console.log("stateChange");
+                    },
+                    changeState: function(e) {
+                        console.log("changeState");
+                    },
+                    tooltipShow: function(e) {
+                        console.log("tooltipShow");
+                    },
+                    tooltipHide: function(e) {
+                        console.log("tooltipHide");
+                    }
                 },
                 xAxis: {
                     axisLabel: 'Date (2015)',
@@ -29,12 +42,12 @@ app.controller('nseCtrl', ['$scope', '$location', '$http',
                 },
                 yAxis: {
                     axisLabel: 'ATM Straddle (INR)',
-                    tickFormat: function(d){
+                    tickFormat: function(d) {
                         return d3.format('.02f')(d);
                     },
                     // axisLabelDistance: 30
                 },
-                callback: function(chart){
+                callback: function(chart) {
                     console.log("!!! lineChart callback !!!");
                 }
             },
@@ -66,31 +79,31 @@ app.controller('nseCtrl', ['$scope', '$location', '$http',
             $http.get('/getSymbols')
                 .success(function(data, status) {
                     $scope.items = data;
+                    $scope.loading = false;
                 });
         }
-        var processATMStraddle = function(data){
+        var processATMStraddle = function(data) {
             //performance
             var t0 = performance.now();
 
             var datedData = _.groupBy(data, 'timestamp');
-            var straddleData = _.map(datedData,function(values, date){
+            var straddleData = _.map(datedData, function(values, date) {
                 //find the first future entry
-                var futidx = _.find(values,function(value){ 
-                    return value.instrument == "FUTIDX" 
-                    || value.instrument == "FUTSTK"; 
+                var futidx = _.find(values, function(value) {
+                    return value.instrument == "FUTIDX" || value.instrument == "FUTSTK";
                 });
                 //close price
                 var close = futidx.close;
                 //find closest call entry
                 //todo: initial memo is first element, error when no strike point found
-                var call = _.reduce(values,function(memo, value){
-                    if(value.option_typ == "CE")
+                var call = _.reduce(values, function(memo, value) {
+                    if (value.option_typ == "CE")
                         return (Math.abs(value.strike_pr - close) < Math.abs(memo.strike_pr - close) ? value : memo);
                     return memo;
                 });
                 //find closest put entry
-                var put = _.reduce(values,function(memo, value){
-                    if(value.option_typ == "PE")
+                var put = _.reduce(values, function(memo, value) {
+                    if (value.option_typ == "PE")
                         return (Math.abs(value.strike_pr - close) < Math.abs(memo.strike_pr - close) ? value : memo);
                     return memo;
                 });
@@ -113,7 +126,7 @@ app.controller('nseCtrl', ['$scope', '$location', '$http',
         getSymbol();
 
         $scope.getSymbolData = function(symbolObj) {
-
+            $scope.loading = true;
             var symbolVal = symbolObj.symbol;
             console.log(symbolVal);
             $http.post('/getDataOfSymbol', {
@@ -125,12 +138,14 @@ app.controller('nseCtrl', ['$scope', '$location', '$http',
                     var straddleData = processATMStraddle(data);
                     var oldData = $scope.data.slice();
                     oldData.push({
-                            values: straddleData,
-                            key: symbolVal
-                        });
+                        values: straddleData,
+                        key: symbolVal
+                    });
                     $scope.data = oldData;
+                    $scope.loading = false;
                 })
                 .error(function(data, status) {
+                    $scope.loading = false;
                     // growl.addErrorMessage(data.message);
                 });
 

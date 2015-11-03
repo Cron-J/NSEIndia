@@ -18,7 +18,7 @@ var bhavFilesZipDir = "./tmp/bhavFilesZip/";
 var bhavFilesCsvDir = "./tmp/bhavFilesCsv/";
 var bhavFileRequestHeader = {"User-Agent":"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.97 Safari/537.11","Referer":"http://www.nseindia.com/products/content/all_daily_reports.htm","Accept-Encoding":"gzip,deflate,sdch","encoding":"null","Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8","Cookie":"cookie"};
 // var conString = "postgres://username:password@localhost/database";
-var conString = "postgres://postgres:cronj123@localhost/stk";
+var conString = "postgres://postgres:cronj123@localhost/skt";
 
 function copyToDB(fileName){
 	pg.connect(conString, function(err, client, done) {
@@ -26,6 +26,7 @@ function copyToDB(fileName){
 		var fileStream = fs.createReadStream(bhavFilesCsvDir + fileName);
 		fileStream.pipe(stream).on('finish', function(){
 			console.log("Data Imported to PG: ", fileName);
+			done();
 		});
 	});
 }
@@ -62,7 +63,7 @@ function importBhavFilesBetween(startDate, endDate){
 
 app.get('/import', function (req, res) {
 	// importBhavFilesBetween(moment('2015-09-30'), moment('2015-10-29'));
-	importBhavFilesBetween(moment('2015-04-29'), moment('2015-10-29'));
+	importBhavFilesBetween(moment('2014-10-30'), moment('2015-10-29'));
   res.send('Importing NSE India Data...');
 });
 app.get('/getSymbols',function(req,res){
@@ -94,7 +95,7 @@ app.post('/getDataOfSymbol',function(req,res){
 			return console.error('error fetching client from pool', err);
 		}
 		// client.query("SELECT instrument, option_typ, strike_pr, close, timestamp, expiry_dt from bhav where instrument IN ('FUTIDX','FUTSTK') and symbol = $1 and timestamp between $2  and $3 order by timestamp", [req.body.symbol, req.body.from, req.body.to],function(err, result) {
-		client.query("SELECT instrument, option_typ, strike_pr, close, timestamp, expiry_dt from bhav where symbol = $1 and timestamp between $2  and $3 order by timestamp", [req.body.symbol, req.body.from, req.body.to],function(err, result) {
+		client.query("SELECT instrument, option_typ, strike_pr, close, timestamp, expiry_dt from bhav where symbol = $1 and timestamp between $2  and $3", [req.body.symbol, req.body.from, req.body.to],function(err, result) {
 			//call `done()` to release the client back to the pool
 			done();
 			res.send(result.rows);

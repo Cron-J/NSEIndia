@@ -17,6 +17,7 @@
     "pg": "^4.4.3",
     "pg-copy-streams": "^0.3.0",
     "request": "^2.65.0",
-    "string-format": "^0.5.0"
+    "string-format": "^0.5.0",
+    "underscore": "^1.8.3"
   }
 }

@@ -18,7 +18,8 @@ CONTRACTS	real,
 VAL_INLAKH	real,
 OPEN_INT	real,
 CHG_IN_OI	real,
-TIMESTAMP	date
+TIMESTAMP	date,
+none char(1)
 )
 WITH (
   OIDS=FALSE

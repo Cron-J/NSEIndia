@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <link href="lib/nv.d3.css" rel="stylesheet" type="text/css">
+    <link href="lib/custom.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <script src="./bower_components/angular/angular.js"></script>
     <script src="./bower_components/underscore/underscore.js"></script>
@@ -18,11 +19,21 @@
         <div class="row">
             <div class="form-inline">
                 <div class="form-group">
-                    <select class="form-control" ng-model="symbol" ng-options="item.symbol for item in items" ng-change="getSymbolData(symbol);"></select>
+                    <select class="form-control" ng-model="symbol" ng-options="item.symbol for item in items" ng-change="getSymbolData(symbol);">
+                        <option value="">--Select Symbol--</option>
+                    </select>
+                    <img src="./images/loading.gif" ng-show="loading">
                 </div>
             </div>
         </div>
         <div class="row">
+            <div class="pagination">
+                <a href="#" class="page">1 M</a>
+                <a href="#" class="page">2 M</a>
+                <a href="#" class="page">3 M</a>
+                <a href="#"><span class="page active">6 M</span></a>
+                <a href="#" class="page">All Time</a>
+            </div>
             <nvd3 options="options" data="data"></nvd3>
         </div>
     </div>
