@@ -7,7 +7,8 @@ var express = require('express')
 , Zip = require('adm-zip')
 , pg = require('pg')
 , copyFrom = require('pg-copy-streams').from
-, app = express();
+, app = express()
+, _ = require("underscore");
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
 format.extend(String.prototype);
@@ -100,7 +101,49 @@ app.post('/getDataOfSymbol',function(req,res){
 			done();
 
 			var resultdata = result.rows;
-			res.send(resultdata);
+
+			// res.send(resultdata);
+
+			// var t0 = performance.now();
+
+            var datedData = _.groupBy(resultdata, 'timestamp');
+            var straddleData = _.map(datedData, function(values, date) {
+                //find the first future entry
+                var futidx = _.find(values, function(value) {
+                    return value.instrument == "FUTIDX" || value.instrument == "FUTSTK";
+                });
+                //close price
+                var close = futidx.close;
+                //find closest call entry
+                //todo: initial memo is first element, error when no strike point found
+                var call = _.reduce(values, function(memo, value) {
+                    if (value.option_typ == "CE")
+                        return (Math.abs(value.strike_pr - close) < Math.abs(memo.strike_pr - close) ? value : memo);
+                    return memo;
+                });
+                //find closest put entry
+                var put = _.reduce(values, function(memo, value) {
+                    if (value.option_typ == "PE")
+                        return (Math.abs(value.strike_pr - close) < Math.abs(memo.strike_pr - close) ? value : memo);
+                    return memo;
+                });
+                return {
+                    futidx: futidx,
+                    call: call,
+                    put: put,
+                    date: date,
+                    straddle: call.close + put.close
+                };
+            });
+            // console.log(straddleData);
+
+            //performance
+            // var t1 = performance.now();
+            // console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")
+            res.send(straddleData);
+
+
+
 
 
 			if(err) {

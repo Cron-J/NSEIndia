@@ -19,7 +19,7 @@
         <div class="row">
             <div class="form-inline">
                 <div class="form-group">
-                    <select class="form-control" ng-model="symbol" ng-options="item.symbol for item in items" ng-change="getSymbolData(symbol);">
+                    Add Symbol: <select class="form-control" ng-model="data.symbol" ng-init="data.todate=date" ng-options="item.symbol for item in items" ng-change="getSymbolData(data);">
                         <option value="">--Select Symbol--</option>
                     </select>
                     <img src="./images/loading.gif" ng-show="loading">
@@ -27,12 +27,22 @@
             </div>
         </div>
         <div class="row">
-            <div class="pagination">
-                <a href="#" class="page">1 M</a>
-                <a href="#" class="page">2 M</a>
-                <a href="#" class="page">3 M</a>
-                <a href="#"><span class="page active">6 M</span></a>
-                <a href="#" class="page">All Time</a>
+            <div class="form-inline">
+                <div class="pagination">
+                    <a href="#" class="page">1 M</a>
+                    <a href="#" class="page">2 M</a>
+                    <a href="#" class="page">3 M</a>
+                    <a href="#"><span class="page active">6 M</span></a>
+                    <a href="#" class="page">All Time</a>
+                </div>
+                <div class="form-group">
+                    <label class="label-control">From Date</label>
+                    <input class="form-control" type="date" ng-model="data.fromdate" placeholder="from" ng-change="getSymbolData(data);">
+                </div>
+                <div class="form-group">
+                    <label class="label-control">To Date</label>
+                    <input class="form-control" type="date" ng-model="data.todate" placeholder="to" nng-change="getSymbolData(data);">
+                </div>
             </div>
             <nvd3 options="options" data="data"></nvd3>
         </div>
