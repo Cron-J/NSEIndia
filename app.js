@@ -95,7 +95,6 @@ app.post('/getDataOfSymbol',function(req,res){
 		if(err) {
 			return console.error('error fetching client from pool', err);
 		}
-		// client.query("SELECT instrument, option_typ, strike_pr, close, timestamp, expiry_dt from bhav where instrument IN ('FUTIDX','FUTSTK') and symbol = $1 and timestamp between $2  and $3 order by timestamp", [req.body.symbol, req.body.from, req.body.to],function(err, result) {
 		client.query("SELECT instrument, option_typ, strike_pr, close, timestamp, expiry_dt from bhav where symbol = $1 and timestamp between $2  and $3 order by timestamp", [req.body.symbol, req.body.from, req.body.to],function(err, result) {
 			//call `done()` to release the client back to the pool
 			done();
@@ -109,9 +108,12 @@ app.post('/getDataOfSymbol',function(req,res){
             var datedData = _.groupBy(resultdata, 'timestamp');
             var straddleData = _.map(datedData, function(values, date) {
                 //find the first future entry
-                var futidx = _.find(values, function(value) {
+                var futidxes = _.filter(values, function(value) {
                     return value.instrument == "FUTIDX" || value.instrument == "FUTSTK";
                 });
+                var futidx = _.reduce(futidxes, function(memo, value){
+                	return (new Date(value.expiry_dt) < new Date(memo.expiry_dt) ? value : memo);
+                })
                 //close price
                 var close = futidx.close;
                 //find closest call entry
@@ -131,7 +133,7 @@ app.post('/getDataOfSymbol',function(req,res){
                     futidx: futidx,
                     call: call,
                     put: put,
-                    date: date,
+                    date: new Date(date),
                     straddle: call.close + put.close
                 };
             });
@@ -140,7 +142,7 @@ app.post('/getDataOfSymbol',function(req,res){
             //performance
             // var t1 = performance.now();
             // console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")
-            res.send(straddleData);
+            res.send(_.sortBy(straddleData, 'date'));
 
 
 
